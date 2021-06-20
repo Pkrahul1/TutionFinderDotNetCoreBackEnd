@@ -28,7 +28,7 @@ namespace ServiceLayerAPI.Controllers
             List<CommonTeacher> lstTeacher = null;
             try
             {
-                lstTeacher = btObj.GetAllTacher();
+                lstTeacher = bcObj.GetAllTacher();
             }
             catch
             {
@@ -42,7 +42,7 @@ namespace ServiceLayerAPI.Controllers
             List<CommonStudent> lstStudent = null;
             try
             {
-                lstStudent = bsObj.GetAllStudent();
+                lstStudent = bcObj.GetAllStudent();
             }
             catch
             {

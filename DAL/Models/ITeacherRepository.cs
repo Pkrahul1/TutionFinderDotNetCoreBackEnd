@@ -7,6 +7,6 @@ namespace DAL.Models
 {
     public interface ITeacherRepository
     {
-        List<CommonTeacher> GetAllTeacher();
+        //List<CommonTeacher> GetAllTeacher();
     }
 }

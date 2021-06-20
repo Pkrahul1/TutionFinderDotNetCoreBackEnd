@@ -41,5 +41,59 @@ namespace DAL.Models
             return lstTution;
 
         }
+        public List<CommonStudent> GetAllStudent()
+        {
+            List<CommonStudent> lstStudents = new List<CommonStudent>();
+            IEnumerable<Student> students = null;
+            try
+            {
+                students = context.Students;
+
+                foreach (var student in students)
+                {
+                    CommonStudent cStudent = new CommonStudent();
+
+                    cStudent.Email = student.Email;
+                    cStudent.Id = student.Id;
+                    cStudent.Name = student.Name;
+                    cStudent.City = student.City;
+                    lstStudents.Add(cStudent);
+                }
+            }
+            catch (Exception ex)
+            {
+                lstStudents = null;
+            }
+            return lstStudents;
+
+        }
+        public List<CommonTeacher> GetAllTeacher()
+        {
+            List<CommonTeacher> lstTeacher = new List<CommonTeacher>();
+            IEnumerable<Teacher> teachers = null;
+            try
+            {
+                teachers = context.Teachers;
+
+                foreach (var teacher in teachers)
+                {
+                    CommonTeacher cTeacher = new CommonTeacher();
+                    cTeacher.Id = teacher.Id;
+                    cTeacher.Name = teacher.Name;
+                    cTeacher.Email = teacher.Email;
+                    cTeacher.City = teacher.City;
+                    cTeacher.Gender = (CALforDataTransfer.Models.Gender)teacher.Gender;
+                    cTeacher.About = teacher.About;
+                    cTeacher.Skills = teacher.Skills;
+                    lstTeacher.Add(cTeacher);
+                }
+            }
+            catch (Exception ex)
+            {
+                lstTeacher = null;
+            }
+            return lstTeacher;
+
+        }
     }
 }

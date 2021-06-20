@@ -13,19 +13,7 @@ namespace BAL.Models
         {
             this.iteacher = iTeacher;
         }
-        public List<CommonTeacher> GetAllTacher()
-        {
-            List<CommonTeacher> lstTeacher = null;
-            try
-            {
-                lstTeacher = iteacher.GetAllTeacher();
-            }
-            catch
-            {
-                lstTeacher = null;
-            }
-            return lstTeacher;
-        }
+      
 
     }
 }

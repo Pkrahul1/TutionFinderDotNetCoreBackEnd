@@ -7,6 +7,6 @@ namespace DAL.Models
 {
     public interface IStudentRepository
     {
-        List<CommonStudent> GetAllStudent();
+        //List<CommonStudent> GetAllStudent();
     }
 }

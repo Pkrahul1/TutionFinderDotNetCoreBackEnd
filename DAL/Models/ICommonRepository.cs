@@ -8,5 +8,7 @@ namespace DAL.Models
     public interface ICommonRepository
     {
         List<CommonTution> GetAllTution();
+        List<CommonStudent> GetAllStudent();
+        List<CommonTeacher> GetAllTeacher();
     }
 }

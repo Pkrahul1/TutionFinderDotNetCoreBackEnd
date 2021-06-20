@@ -13,18 +13,6 @@ namespace BAL.Models
         {
             this.iStudent = iStudent;     
         }
-        public List<CommonStudent> GetAllStudent()
-        {
-            List<CommonStudent> lstStudent = null;
-            try
-            {
-                lstStudent = iStudent.GetAllStudent();
-            }
-            catch
-            {
-                lstStudent = null;
-            }
-            return lstStudent;
-        }
+        
     }
 }

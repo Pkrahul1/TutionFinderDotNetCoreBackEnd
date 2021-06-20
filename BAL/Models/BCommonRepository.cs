@@ -26,5 +26,31 @@ namespace BAL.Models
             }
             return lstTution;
         }
+        public List<CommonStudent> GetAllStudent()
+        {
+            List<CommonStudent> lstStudent = null;
+            try
+            {
+                lstStudent = icommon.GetAllStudent();
+            }
+            catch
+            {
+                lstStudent = null;
+            }
+            return lstStudent;
+        }
+        public List<CommonTeacher> GetAllTacher()
+        {
+            List<CommonTeacher> lstTeacher = null;
+            try
+            {
+                lstTeacher = icommon.GetAllTeacher();
+            }
+            catch
+            {
+                lstTeacher = null;
+            }
+            return lstTeacher;
+        }
     }
 }
