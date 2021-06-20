@@ -45,10 +45,10 @@ namespace ServiceLayerAPI
                 app.UseHsts();
             }
             app.UseMvcWithDefaultRoute();//will open index in home controller at local url if no attribute at controller and method used
-            //app.Run(async (context) =>
-            //{
-            //    await context.Response.WriteAsync("Hello,no middleware to handle request, this if from default middleware");
-            //});
+            app.Run(async (context) =>
+            {
+                await context.Response.WriteAsync("Hello,no middleware to handle request, this if from default middleware");
+            });
         }
     }
 }
