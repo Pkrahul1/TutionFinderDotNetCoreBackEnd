@@ -52,5 +52,44 @@ namespace BAL.Models
             }
             return lstTeacher;
         }
+        public CommonTeacher GetTeacher(int id)
+        {
+            CommonTeacher teacher = null;
+            try
+            {
+                teacher = icommon.GetTeacher(id);
+            }
+            catch
+            {
+                teacher = null;
+            }
+            return teacher;
+        }
+        public CommonStudent GetStudent(int id)
+        {
+            CommonStudent student = null;
+            try
+            {
+                student = icommon.GetStudent(id);
+            }
+            catch
+            {
+                student = null;
+            }
+            return student;
+        }
+        public CommonTution GetTution(int id)
+        {
+            CommonTution tution = null;
+            try
+            {
+                tution = icommon.GetTution(id);
+            }
+            catch
+            {
+                tution = null;
+            }
+            return tution;
+        }
     }
 }

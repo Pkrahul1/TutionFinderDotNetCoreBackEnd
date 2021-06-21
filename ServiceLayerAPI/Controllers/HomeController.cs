@@ -65,9 +65,52 @@ namespace ServiceLayerAPI.Controllers
             return Json(lstTution);
         }
         [HttpGet]
+        public JsonResult GetTeacher(int id)
+        {
+            CommonTeacher teacher = null;
+            try
+            {
+                teacher = bcObj.GetTeacher(id);
+            }
+            catch (Exception ex)
+            {
+                teacher = null;
+            }
+            return Json(teacher);
+        }
+        [HttpGet]
+        public JsonResult GetStudent(int id)
+        {
+            CommonStudent student = null;
+            try
+            {
+                student = bcObj.GetStudent(id);
+            }
+            catch (Exception ex)
+            {
+                student = null;
+            }
+            return Json(student);
+        }
+        [HttpGet]
+        public JsonResult GEtTution(int id)
+        {
+            CommonTution tution = null;
+            try
+            {
+                tution = bcObj.GetTution(id);
+            }
+            catch (Exception ex)
+            {
+                tution = null;
+            }
+            return Json(tution);
+        }
+        [HttpGet]
         public JsonResult Index()
         {
             return Json("Rahul Kumar");
         }
+
     }
 }

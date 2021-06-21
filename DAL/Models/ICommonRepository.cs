@@ -10,5 +10,8 @@ namespace DAL.Models
         List<CommonTution> GetAllTution();
         List<CommonStudent> GetAllStudent();
         List<CommonTeacher> GetAllTeacher();
+        CommonTeacher GetTeacher(int id);
+        CommonStudent GetStudent(int id);
+        CommonTution GetTution(int id);
     }
 }
