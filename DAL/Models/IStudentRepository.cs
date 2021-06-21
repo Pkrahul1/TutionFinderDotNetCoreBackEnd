@@ -7,6 +7,7 @@ namespace DAL.Models
 {
     public interface IStudentRepository
     {
-        //List<CommonStudent> GetAllStudent();
+        bool EditStudent(CommonStudent cstudent);
+        bool EditTution(CommonTution ctution);
     }
 }

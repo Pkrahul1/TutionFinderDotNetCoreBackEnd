@@ -13,7 +13,18 @@ namespace BAL.Models
         {
             this.iteacher = iTeacher;
         }
-      
-
+        public bool UpdateTeacher(CommonTeacher cteacher)
+        {
+            bool status = false;
+            try
+            {
+                status = iteacher.EditTeacher(cteacher);
+            }
+            catch
+            {
+                status = false;
+            }
+            return status;
+        }
     }
 }

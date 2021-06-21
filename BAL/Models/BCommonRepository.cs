@@ -2,6 +2,7 @@
 using DAL.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BAL.Models
@@ -51,6 +52,20 @@ namespace BAL.Models
                 lstTeacher = null;
             }
             return lstTeacher;
+        }
+        public List<CommonTution> ViewHistory(string email)
+        {
+            List<CommonTution> lstTution = null;
+            try
+            {
+                lstTution = icommon.GetAllTution();
+                lstTution = lstTution.FindAll(e => e.CreaterId ==email.ToString());
+            }
+            catch
+            {
+                lstTution = null;
+            }
+            return lstTution;
         }
         public CommonTeacher GetTeacher(int id)
         {
