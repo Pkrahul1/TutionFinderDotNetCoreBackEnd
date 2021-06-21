@@ -65,13 +65,13 @@ namespace ServiceLayerAPI.Controllers
             }
             return Json(lstTution);
         }
-        [HttpGet("{id}")]
-        public JsonResult GetTeacher(int id)
+        [HttpGet("{email}")]
+        public JsonResult GetTeacher(string email)
         {
             CommonTeacher teacher = null;
             try
             {
-                teacher = bcObj.GetTeacher(id);
+                teacher = bcObj.GetTeacher(email);
             }
             catch (Exception ex)
             {
@@ -79,13 +79,13 @@ namespace ServiceLayerAPI.Controllers
             }
             return Json(teacher);
         }
-        [HttpGet("{id}")]
-        public JsonResult GetStudent(int id)
+        [HttpGet("{email}")]
+        public JsonResult GetStudent(string email)
         {
             CommonStudent student = null;
             try
             {
-                student = bcObj.GetStudent(id);
+                student = bcObj.GetStudent(email);
             }
             catch (Exception ex)
             {
@@ -93,13 +93,13 @@ namespace ServiceLayerAPI.Controllers
             }
             return Json(student);
         }
-        [HttpGet("{id}")]
-        public JsonResult GetTution(int id)
+        [HttpGet("{email}")]
+        public JsonResult GetTution(string email)
         {
             CommonTution tution = null;
             try
             {
-                tution = bcObj.GetTution(id);
+                tution = bcObj.GetTution(email);
             }
             catch (Exception ex)
             {
@@ -108,7 +108,7 @@ namespace ServiceLayerAPI.Controllers
             return Json(tution);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{email}")]
         public JsonResult ViewHistory(string email)
         {
             List<CommonTution> lstTution = null;
@@ -125,6 +125,24 @@ namespace ServiceLayerAPI.Controllers
         #endregion
 
         #region [Post Methods]
+
+        [HttpPost]
+        public JsonResult CreateTution(CommonTution tution)
+        {
+            bool status = false;
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    status = bsObj.CreateTution(tution);
+                }
+            }
+            catch
+            {
+                status = false;
+            }
+            return Json(status);
+        }
         [HttpPost]
         public JsonResult EditStudent(CommonStudent student)
         {

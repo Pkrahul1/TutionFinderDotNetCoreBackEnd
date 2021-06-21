@@ -83,7 +83,6 @@ namespace DAL.Models
             CommonStudent cStudent = new CommonStudent();
 
             cStudent.Email = student.Email;
-            cStudent.Id = student.Id;
             cStudent.Name = student.Name;
             cStudent.City = student.City;
             return cStudent;
@@ -119,7 +118,6 @@ namespace DAL.Models
         private static CommonTeacher FormTeacher(Teacher teacher)
         {
             CommonTeacher cTeacher = new CommonTeacher();
-            cTeacher.Id = teacher.Id;
             cTeacher.Name = teacher.Name;
             cTeacher.Email = teacher.Email;
             cTeacher.City = teacher.City;
@@ -129,12 +127,12 @@ namespace DAL.Models
             return cTeacher;
         }
 
-        public CommonTeacher GetTeacher(int id)
+        public CommonTeacher GetTeacher(string email)
         {
             CommonTeacher cteacher = null;
             try
             {
-                Teacher teacher = context.Teachers.Find(id);
+                Teacher teacher = context.Teachers.Find(email);
                 cteacher = FormTeacher(teacher);
             }
             catch (Exception ex)
@@ -143,12 +141,12 @@ namespace DAL.Models
             }
             return cteacher;
         }
-        public CommonStudent GetStudent(int id)
+        public CommonStudent GetStudent(string email)
         {
             CommonStudent cstudent = null;
             try
             {
-                Student student = context.Students.Find(id);
+                Student student = context.Students.Find(email);
                 cstudent = FormStudent(student);
             }
             catch (Exception ex)
@@ -157,12 +155,12 @@ namespace DAL.Models
             }
             return cstudent;
         }
-        public CommonTution GetTution(int id)
+        public CommonTution GetTution(string email)
         {
             CommonTution ctution = null;
             try
             {
-                Tution tution = context.Tutions.Find(id);
+                Tution tution = context.Tutions.Find(email);
                 ctution = FormTution(tution);
             }
             catch (Exception ex)

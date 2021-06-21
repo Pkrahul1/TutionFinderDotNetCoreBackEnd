@@ -26,5 +26,31 @@ namespace BAL.Models
             }
             return status;
         }
+        public bool RegisterStudent(CommonTeacher cteacher)
+        {
+            bool status = false;
+            try
+            {
+                status = iteacher.AddTeacher(cteacher);
+            }
+            catch
+            {
+                status = false;
+            }
+            return status;
+        }
+        public bool DeleteTeacher(string email)
+        {
+            bool status = false;
+            try
+            {
+                status = iteacher.Deleteteacher(email);
+            }
+            catch
+            {
+                status = false;
+            }
+            return status;
+        }
     }
 }

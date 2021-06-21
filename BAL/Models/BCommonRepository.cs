@@ -59,7 +59,7 @@ namespace BAL.Models
             try
             {
                 lstTution = icommon.GetAllTution();
-                lstTution = lstTution.FindAll(e => e.CreaterId ==email.ToString());
+                lstTution = lstTution.FindAll(e => e.CreaterId == email.ToString());
             }
             catch
             {
@@ -67,12 +67,12 @@ namespace BAL.Models
             }
             return lstTution;
         }
-        public CommonTeacher GetTeacher(int id)
+        public CommonTeacher GetTeacher(string email)
         {
             CommonTeacher teacher = null;
             try
             {
-                teacher = icommon.GetTeacher(id);
+                teacher = icommon.GetTeacher(email);
             }
             catch
             {
@@ -80,12 +80,12 @@ namespace BAL.Models
             }
             return teacher;
         }
-        public CommonStudent GetStudent(int id)
+        public CommonStudent GetStudent(string email)
         {
             CommonStudent student = null;
             try
             {
-                student = icommon.GetStudent(id);
+                student = icommon.GetStudent(email);
             }
             catch
             {
@@ -93,12 +93,12 @@ namespace BAL.Models
             }
             return student;
         }
-        public CommonTution GetTution(int id)
+        public CommonTution GetTution(string email)
         {
             CommonTution tution = null;
             try
             {
-                tution = icommon.GetTution(id);
+                tution = icommon.GetTution(email);
             }
             catch
             {
