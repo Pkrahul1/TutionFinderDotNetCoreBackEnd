@@ -10,5 +10,6 @@ namespace DAL.Models
         bool EditTeacher(CommonTeacher cteacher);
         bool AddTeacher(CommonTeacher cteacher);
         bool Deleteteacher(string email);
+        bool ApplyTution(int id,string email);
     }
 }

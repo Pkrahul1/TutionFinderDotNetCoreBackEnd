@@ -11,12 +11,12 @@ namespace DAL.Models
         {
             modelBuilder.Entity<Student>().HasData(
                    new Student
-                    {
-                        Name = "Mary",
-                        City = "Chapra",
-                        Email = "pkrahul.ks16@gmail.com",
-                        Password="12345678",
-                        ConfirmPassword= "12345678"
+                   {
+                       Name = "Mary",
+                       City = "Chapra",
+                       Email = "pkrahul.ks16@gmail.com",
+                       Password = "12345678",
+                       ConfirmPassword = "12345678"
                    },
                    new Student
                    {
@@ -30,12 +30,12 @@ namespace DAL.Models
             modelBuilder.Entity<Teacher>().HasData(
                 new Teacher
                 {
-                    Name="David",
-                    Email="rahulll.ks18@gmail.com",
-                    City="Patna",
-                    Gender=Gender.Male,
-                    About="I can teach from class 5 to 10 , All Subjects.",
-                    Skills="MATH, ENGLISH,SCIENCE",
+                    Name = "David",
+                    Email = "rahulll.ks18@gmail.com",
+                    City = "Patna",
+                    Gender = Gender.Male,
+                    About = "I can teach from class 5 to 10 , All Subjects.",
+                    Skills = "MATH, ENGLISH,SCIENCE",
                     Password = "12345678",
                     ConfirmPassword = "12345678"
                 },
@@ -54,21 +54,30 @@ namespace DAL.Models
             modelBuilder.Entity<Tution>().HasData(
                new Tution
                {
-                   Id = 1,
+                   Id=1,
                    City = "chapra",
                    Description = "I can teach from class 5 to 10 , All Subjects.",
                    CreaterId = "rahull.ks16@gmail.com",
-                   Status = true
+                   Status = "Not Applied"
 
                },
                new Tution
                {
-                   Id = 2,
+                   Id=2,
                    City = "Patna",
                    Description = "I can teach from class 5 to 10 , All Subjects.",
                    CreaterId = "pkrahul.ks16@gmail.com",
-                   Status = true
+                   Status = "Not Applied"
                }
+               );
+           modelBuilder.Entity<Notification>().HasData(
+              new Notification
+               {
+                    Id=1,
+                    To = "rahulll.ks18@gmail.com",
+                    From = "pkrahul.ks16@gmail.com",
+                    Msg = "Someone to the tution you created"
+                }
                ) ;
         }
     }

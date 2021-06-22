@@ -65,6 +65,21 @@ namespace ServiceLayerAPI.Controllers
             }
             return Json(lstTution);
         }
+
+        [HttpGet("{email}")]
+        public JsonResult GetAllNotification(string email)
+        {
+            List<CommonNotification> lstNotification = null;
+            try
+            {
+                lstNotification = bcObj.GetAllNotification(email);
+            }
+            catch (Exception ex)
+            {
+                lstNotification = null;
+            }
+            return Json(lstNotification);
+        }
         [HttpGet("{email}")]
         public JsonResult GetTeacher(string email)
         {
@@ -93,13 +108,13 @@ namespace ServiceLayerAPI.Controllers
             }
             return Json(student);
         }
-        [HttpGet("{email}")]
-        public JsonResult GetTution(string email)
+        [HttpGet("{id}")]
+        public JsonResult GetTution(int id)
         {
             CommonTution tution = null;
             try
             {
-                tution = bcObj.GetTution(email);
+                tution = bcObj.GetTution(id);
             }
             catch (Exception ex)
             {
@@ -187,6 +202,24 @@ namespace ServiceLayerAPI.Controllers
                 if (ModelState.IsValid)
                 {
                     status = bsObj.UpdateTution(tution);
+                }
+            }
+            catch
+            {
+                status = false;
+            }
+            return Json(status);
+        }
+
+        [HttpPost]
+        public JsonResult AddNotification(CommonNotification notification)
+        {
+            bool status = false;
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    status = bcObj.AddNotification(notification);
                 }
             }
             catch

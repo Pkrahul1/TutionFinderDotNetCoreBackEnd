@@ -10,8 +10,11 @@ namespace DAL.Models
         List<CommonTution> GetAllTution();
         List<CommonStudent> GetAllStudent();
         List<CommonTeacher> GetAllTeacher();
+        List<CommonNotification> GetAllNotification(string email);
         CommonTeacher GetTeacher(string email);
         CommonStudent GetStudent(string email);
-        CommonTution GetTution(string email);
+        CommonTution GetTution(int id);
+        bool AddNotification(CommonNotification notification);
+
     }
 }

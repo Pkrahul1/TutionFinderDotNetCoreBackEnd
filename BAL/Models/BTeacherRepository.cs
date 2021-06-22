@@ -26,7 +26,7 @@ namespace BAL.Models
             }
             return status;
         }
-        public bool RegisterStudent(CommonTeacher cteacher)
+        public bool RegisterTeacher(CommonTeacher cteacher)
         {
             bool status = false;
             try
@@ -45,6 +45,19 @@ namespace BAL.Models
             try
             {
                 status = iteacher.Deleteteacher(email);
+            }
+            catch
+            {
+                status = false;
+            }
+            return status;
+        }
+        public bool AppliyTution(int id,string email)
+        {
+            bool status = false;
+            try
+            {
+                status = iteacher.ApplyTution(id,email);
             }
             catch
             {

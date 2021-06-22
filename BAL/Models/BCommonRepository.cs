@@ -59,9 +59,11 @@ namespace BAL.Models
             try
             {
                 lstTution = icommon.GetAllTution();
-                lstTution = lstTution.FindAll(e => e.CreaterId == email.ToString());
+                lstTution = lstTution.FindAll(e => e.CreaterId == email.ToString() 
+                                    || (!string.IsNullOrEmpty(e.AppliedBy) && e.AppliedBy.Contains(email)) || (!string.IsNullOrEmpty(e.AppliedBy)&& e.ApprovedTo == email));
+                    
             }
-            catch
+            catch (Exception ex)
             {
                 lstTution = null;
             }
@@ -93,18 +95,45 @@ namespace BAL.Models
             }
             return student;
         }
-        public CommonTution GetTution(string email)
+        public CommonTution GetTution(int id)
         {
             CommonTution tution = null;
             try
             {
-                tution = icommon.GetTution(email);
+                tution = icommon.GetTution(id);
             }
             catch
             {
                 tution = null;
             }
             return tution;
+        }
+        public List<CommonNotification> GetAllNotification(string email)
+        {
+            List<CommonNotification> lstNotification = null;
+            try
+            {
+                lstNotification = icommon.GetAllNotification(email);
+            }
+            catch
+            {
+                lstNotification = null;
+            }
+            return lstNotification;
+        }
+        public bool AddNotification(CommonNotification notification)
+        {
+            bool status = false;
+            try
+            {
+                status = icommon.AddNotification(notification);
+
+            }
+            catch
+            {
+                status = false;
+            }
+            return status;
         }
     }
 }

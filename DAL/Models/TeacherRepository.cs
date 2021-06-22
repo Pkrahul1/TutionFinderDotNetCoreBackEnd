@@ -77,7 +77,24 @@ namespace DAL.Models
                 status = false;
             }
             return status;
+        }
 
+        public bool ApplyTution(int id,string email)
+        {
+            bool status = false;
+            try
+            {
+                Tution tution = context.Tutions.Find(id);
+                tution.Status = "Applied";
+                tution.AppliedBy=tution.AppliedBy+";"+email;
+                context.SaveChanges();
+                status = true;
+            }
+            catch (Exception ex)
+            {
+                status = false;
+            }
+            return status;
         }
     }
 }

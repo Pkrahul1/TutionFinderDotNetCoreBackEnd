@@ -11,11 +11,11 @@ namespace BAL.Models
         public IStudentRepository iStudent;
         public BStudentRepository(IStudentRepository iStudent)
         {
-            this.iStudent = iStudent;     
+            this.iStudent = iStudent;
         }
         public bool UpdateStudent(CommonStudent cstudent)
         {
-            bool status=false;
+            bool status = false;
             try
             {
                 status = iStudent.EditStudent(cstudent);

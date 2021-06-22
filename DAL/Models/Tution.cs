@@ -14,10 +14,9 @@ namespace DAL.Models
         [Required]
         //[MaxLength(50, ErrorMessage = "Name cannot exceed 50 characters")]
         public string CreaterId { get; set; }
-        [Required]
-        public bool Status { get; set; }
-        [Required]
+        public string Status { get; set; }
         public string Description { get; set; }
-
+        public string AppliedBy { get; set; }
+        public string ApprovedTo { get; set; }
     }
 }

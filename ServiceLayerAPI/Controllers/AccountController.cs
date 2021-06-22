@@ -31,7 +31,7 @@ namespace ServiceLayerAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    status = bsObj.UpdateStudent(student);
+                    status = bsObj.RegisterStudent(student);
                 }
             }
             catch
@@ -48,7 +48,7 @@ namespace ServiceLayerAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    status = btObj.UpdateTeacher(teacher);
+                    status = btObj.RegisterTeacher(teacher);
                 }
             }
             catch

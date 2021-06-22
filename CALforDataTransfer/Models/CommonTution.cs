@@ -13,8 +13,9 @@ namespace CALforDataTransfer.Models
         [Required]
         public string CreaterId { get; set; }
         [Required]
-        public bool Status { get; set; }
-        [Required]
         public string Description { get; set; }
+        public string Status { get; set; }
+        public string AppliedBy { get; set; }
+        public string ApprovedTo { get; set; }
     }
 }

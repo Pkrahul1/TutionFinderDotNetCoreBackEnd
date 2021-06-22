@@ -116,11 +116,17 @@ namespace DAL.Models
             {
                 IEnumerable<Tution> tutions = context.Tutions;
                 Tution tution = new Tution();
-                tution.Id = tutions.Max(e => e.Id) + 1;
+                //tution id will be added by db as it is an identity key
+                //tution.Id = 0;
+                //if (tutions.Any())
+                //{
+                //    tution.Id = tutions.Max(e => e.Id) + 1;
+                //}
                 tution.City = ctution.City;
                 tution.Description = ctution.Description;
                 tution.CreaterId = ctution.CreaterId;
                 tution.Status = ctution.Status;
+                context.Tutions.Add(tution);
                 context.SaveChanges();
                 status = true;
             }
