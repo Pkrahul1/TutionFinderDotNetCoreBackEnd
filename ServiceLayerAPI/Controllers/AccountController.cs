@@ -1,7 +1,9 @@
 ﻿using BAL.Models;
 using CALforDataTransfer.Models;
 using DAL.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ServiceLayerAPI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,15 +16,25 @@ namespace ServiceLayerAPI.Controllers
     [ApiController]
     public class AccountController:Controller
     {
+        private readonly IStudentRepository iUser;
+        private readonly ITeacherRepository iTeacher;
+        private readonly ICommonRepository iCommon;
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
+
         public BStudentRepository bsObj { get; }
         public BTeacherRepository btObj { get; }
         public BCommonRepository bcObj { get; }
-        public AccountController(IStudentRepository iUser, ITeacherRepository iTeacher, ICommonRepository iCommon)
+        public AccountController(IStudentRepository iUser, ITeacherRepository iTeacher, ICommonRepository iCommon,
+                                    UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager)
         {
-            bsObj = new BStudentRepository(iUser);
-            btObj = new BTeacherRepository(iTeacher);
-            bcObj = new BCommonRepository(iCommon);
+            this.iUser = iUser;
+            this.iTeacher = iTeacher;
+            this.iCommon = iCommon;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
+        #region [Methods without Using Identity]
         [HttpPost]
         public JsonResult RegisterStudent(CommonStudent student)
         {
@@ -49,6 +61,36 @@ namespace ServiceLayerAPI.Controllers
                 if (ModelState.IsValid)
                 {
                     status = btObj.RegisterTeacher(teacher);
+                }
+            }
+            catch
+            {
+                status = false;
+            }
+            return Json(status);
+        }
+        #endregion
+        [HttpPost]
+        public async Task<JsonResult> Register(RegisterViewModel registerViewModels)
+        {
+            bool status = false;
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = new IdentityUser { UserName = registerViewModels.Email, Email = registerViewModels.Email };
+                    var result = await userManager.CreateAsync(user, registerViewModels.Password);
+                    if (result.Succeeded)
+                    {
+                        await signInManager.SignInAsync(user, isPersistent: false);
+                        status = true;
+                    }
+                    foreach(var error in result.Errors)
+                    {
+                        ModelState.AddModelError("Error While Registering", error.Description);
+                        //this modelsate can be used to show error on UI
+                        status = false;
+                    }
                 }
             }
             catch
