@@ -1,18 +1,25 @@
 ﻿using CALforDataTransfer.Models;
+using CALforDataTransfer.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DAL.Models
 {
     public class CommonRepository:ICommonRepository
     {
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
 
         public AppDbContext context { get; }
-        public CommonRepository(AppDbContext context) 
+        public CommonRepository(AppDbContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) 
         {
             this.context = context;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         #region [privates methods to covert context classes to common classes]
@@ -222,5 +229,27 @@ namespace DAL.Models
             return status;
 
         }
+
+        public async Task<bool> Register(RegisterViewModel registerViewModel)
+        {
+            bool status=false;
+            try
+            {
+
+                var user = new IdentityUser { UserName = registerViewModel.Email, Email = registerViewModel.Email};//,Name=registerViewModel.Name,City=registerViewModel.City };
+                var result = await userManager.CreateAsync(user, registerViewModel.Password);
+                if (result.Succeeded)
+                {
+                    await signInManager.SignInAsync(user, isPersistent: false);
+                    status = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                status = false;
+            }
+            return status;
+        }
+        
     }
 }

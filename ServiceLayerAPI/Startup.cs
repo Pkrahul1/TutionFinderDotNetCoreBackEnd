@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 
 namespace ServiceLayerAPI
 { 
@@ -27,6 +28,7 @@ namespace ServiceLayerAPI
         {
             services.AddDbContextPool<AppDbContext>(
                options => options.UseSqlServer(_config.GetConnectionString("UserDBConnection")));
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>() ;
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<ITeacherRepository, TeacherRepository>();
@@ -39,11 +41,12 @@ namespace ServiceLayerAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
+            } 
             else
             {
                 app.UseHsts();
             }
+            app.UseAuthentication();//adding authentication before mvc middleware.
             app.UseMvcWithDefaultRoute();//will open index in home controller at local url if no attribute at controller and method used
             app.Run(async (context) =>
             {

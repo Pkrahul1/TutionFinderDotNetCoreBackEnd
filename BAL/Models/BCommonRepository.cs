@@ -1,9 +1,11 @@
 ﻿using CALforDataTransfer.Models;
+using CALforDataTransfer.ViewModels;
 using DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BAL.Models
 {
@@ -128,6 +130,19 @@ namespace BAL.Models
             {
                 status = icommon.AddNotification(notification);
 
+            }
+            catch
+            {
+                status = false;
+            }
+            return status;
+        }
+        public async Task<bool> Register(RegisterViewModel registerViewModel)
+        {
+            bool status = false;
+            try
+            {
+                status =  await icommon.Register(registerViewModel);
             }
             catch
             {

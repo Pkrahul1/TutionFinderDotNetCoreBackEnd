@@ -1,9 +1,9 @@
 ﻿using BAL.Models;
 using CALforDataTransfer.Models;
+using CALforDataTransfer.ViewModels;
 using DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ServiceLayerAPI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,23 +16,14 @@ namespace ServiceLayerAPI.Controllers
     [ApiController]
     public class AccountController:Controller
     {
-        private readonly IStudentRepository iUser;
-        private readonly ITeacherRepository iTeacher;
-        private readonly ICommonRepository iCommon;
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
-
         public BStudentRepository bsObj { get; }
         public BTeacherRepository btObj { get; }
         public BCommonRepository bcObj { get; }
-        public AccountController(IStudentRepository iUser, ITeacherRepository iTeacher, ICommonRepository iCommon,
-                                    UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager)
+        public AccountController(IStudentRepository iStudent, ITeacherRepository iTeacher, ICommonRepository iCommon)
         {
-            this.iUser = iUser;
-            this.iTeacher = iTeacher;
-            this.iCommon = iCommon;
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            bsObj = new BStudentRepository(iStudent);
+            btObj = new BTeacherRepository(iTeacher);
+            bcObj = new BCommonRepository(iCommon);
         }
         #region [Methods without Using Identity]
         [HttpPost]
@@ -78,24 +69,13 @@ namespace ServiceLayerAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var user = new IdentityUser { UserName = registerViewModels.Email, Email = registerViewModels.Email };
-                    var result = await userManager.CreateAsync(user, registerViewModels.Password);
-                    if (result.Succeeded)
-                    {
-                        await signInManager.SignInAsync(user, isPersistent: false);
-                        status = true;
-                    }
-                    foreach(var error in result.Errors)
-                    {
-                        ModelState.AddModelError("Error While Registering", error.Description);
-                        //this modelsate can be used to show error on UI
-                        status = false;
-                    }
+                    status = await bcObj.Register(registerViewModels);   
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 status = false;
+                ModelState.AddModelError("Error:",ex.ToString());
             }
             return Json(status);
         }
