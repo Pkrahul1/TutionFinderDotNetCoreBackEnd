@@ -29,6 +29,10 @@ namespace ServiceLayerAPI
             services.AddDbContextPool<AppDbContext>(
                options => options.UseSqlServer(_config.GetConnectionString("UserDBConnection")));
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>() ;
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 5;
+            });//same can be done in services.AddIdentity<IdentityUser, IdentityRole>()
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<ITeacherRepository, TeacherRepository>();
