@@ -143,13 +143,12 @@ namespace ServiceLayerAPI.Controllers
 
         #endregion
         [HttpGet]
-        public  JsonResult IsSignedIn  ()
+        public  JsonResult IsSignedIn()
         {
             bool status = false;
             try
             {
-                if(signInManager.IsSignedIn(User));
-                status = true;
+                status = true;   
             }
             catch (Exception ex)
             {

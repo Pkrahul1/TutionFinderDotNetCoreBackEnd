@@ -15,26 +15,6 @@ namespace DAL.Models
             this.context = context;
         }
 
-        public bool EditStudent(CommonStudent cstudent)
-        {
-            bool status = false;
-            try
-            {
-                Student student = context.Students.Find(cstudent.Email);
-                student.Email = cstudent.Email;
-                student.Name = cstudent.Name;
-                student.City = cstudent.City;
-                student.Password = cstudent.Password;
-                student.ConfirmPassword = cstudent.ConfirmPassword;
-                context.SaveChanges();
-                status = true;
-            }
-            catch (Exception ex)
-            {
-                status = false;
-            }
-            return status;
-        }
         public bool EditTution(CommonTution ctution)
         {
             bool status = false;
@@ -45,44 +25,6 @@ namespace DAL.Models
                 tution.Description = ctution.Description;
                 tution.CreaterId = ctution.CreaterId;
                 tution.Status = ctution.Status;
-                context.SaveChanges();
-                status = true;
-            }
-            catch (Exception ex)
-            {
-                status = false;
-            }
-            return status;
-        }
-        public bool AddStudent(CommonStudent cstudent)
-        {
-            bool status = false;
-            try
-            {
-                Student student = new Student();
-                student.Email = cstudent.Email;
-                student.Name = cstudent.Name;
-                student.City = cstudent.City;
-                student.Password = cstudent.Password;
-                student.ConfirmPassword = cstudent.ConfirmPassword;
-                context.Students.Add(student);
-                context.SaveChanges();
-                status = true;
-            }
-            catch (Exception ex)
-            {
-                status = false;
-            }
-            return status;
-        }
-        public bool DeleteStudent(string email)
-        {
-            bool status = false;
-            try
-            {
-                Student student = context.Students.Find(email);
-                
-                context.Students.Remove(student);
                 context.SaveChanges();
                 status = true;
             }

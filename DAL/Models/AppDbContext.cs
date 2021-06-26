@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DAL.Models
 {
-    public class AppDbContext:IdentityDbContext
+    public class AppDbContext:IdentityDbContext<AppUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options) { }
         public DbSet<Student> Students { get; set; }

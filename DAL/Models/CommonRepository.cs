@@ -11,11 +11,11 @@ namespace DAL.Models
 {
     public class CommonRepository:ICommonRepository
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<AppUser> userManager;
+        private readonly SignInManager<AppUser> signInManager;
 
         public AppDbContext context { get; }
-        public CommonRepository(AppDbContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) 
+        public CommonRepository(AppDbContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager) 
         {
             this.context = context;
             this.userManager = userManager;
@@ -47,13 +47,13 @@ namespace DAL.Models
         /// </summary>
         /// <param name="teacher"></param>
         /// <returns></returns>
-        private static CommonTeacher FormTeacher(Teacher teacher)
+        private static CommonUser FormTeacher(AppUser teacher)
         {
-            CommonTeacher cTeacher = new CommonTeacher();
+            CommonUser cTeacher = new CommonUser();
             cTeacher.Name = teacher.Name;
             cTeacher.Email = teacher.Email;
             cTeacher.City = teacher.City;
-            cTeacher.Gender = (CALforDataTransfer.Models.Gender)teacher.Gender;
+            cTeacher.Gender = teacher.Gender;
             cTeacher.About = teacher.About;
             cTeacher.Skills = teacher.Skills;
             return cTeacher;
@@ -63,9 +63,9 @@ namespace DAL.Models
         /// </summary>
         /// <param name="student"></param>
         /// <returns></returns>
-        private static CommonStudent FormStudent(Student student)
+        private static CommonUser FormStudent(AppUser student)
         {
-            CommonStudent cStudent = new CommonStudent();
+            CommonUser cStudent = new CommonUser();
 
             cStudent.Email = student.Email;
             cStudent.Name = student.Name;
@@ -95,17 +95,16 @@ namespace DAL.Models
             return lstTution;
 
         }
-        public List<CommonStudent> GetAllStudent()
+        public List<CommonUser> GetAllStudent()
         {
-            List<CommonStudent> lstStudents = new List<CommonStudent>();
-            IEnumerable<Student> students = null;
+            IEnumerable<AppUser> students = null;
+            List<CommonUser> lstStudents = new List<CommonUser>();
             try
             {
-                students = context.Students;
-
+                students = userManager.Users;
                 foreach (var student in students)
                 {
-                    CommonStudent cStudent = FormStudent(student);
+                    CommonUser cStudent = FormStudent(student);
                     lstStudents.Add(cStudent);
                 }
             }
@@ -116,25 +115,24 @@ namespace DAL.Models
             return lstStudents;
 
         }
-        public List<CommonTeacher> GetAllTeacher()
+        public List<CommonUser> GetAllTeacher()
         {
-            List<CommonTeacher> lstTeacher = new List<CommonTeacher>();
-            IEnumerable<Teacher> teachers = null;
+            IEnumerable<AppUser> teachers = null;
+            List<CommonUser> lstTeachers = new List<CommonUser>();
             try
             {
-                teachers = context.Teachers;
-
+                teachers = userManager.Users;
                 foreach (var teacher in teachers)
                 {
-                    CommonTeacher cTeacher = FormTeacher(teacher);
-                    lstTeacher.Add(cTeacher);
+                    CommonUser cStudent = FormTeacher(teacher);
+                    lstTeachers.Add(cStudent);
                 }
             }
             catch (Exception ex)
             {
-                lstTeacher = null;
+                lstTeachers = null;
             }
-            return lstTeacher;
+            return lstTeachers;
 
         }
         public List<CommonNotification> GetAllNotification(string email)
@@ -161,12 +159,12 @@ namespace DAL.Models
             return lstNotification;
 
         }
-        public CommonTeacher GetTeacher(string email)
+        public async Task<CommonUser> GetTeacher(string email)
         {
-            CommonTeacher cteacher = null;
+            CommonUser cteacher = null;
             try
             {
-                Teacher teacher = context.Teachers.Find(email);
+                AppUser teacher = await userManager.FindByEmailAsync(email);
                 cteacher = FormTeacher(teacher);
             }
             catch (Exception ex)
@@ -175,12 +173,12 @@ namespace DAL.Models
             }
             return cteacher;
         }
-        public CommonStudent GetStudent(string email)
+        public async Task<CommonUser> GetStudent(string email)
         {
-            CommonStudent cstudent = null;
+            CommonUser cstudent = null;
             try
             {
-                Student student = context.Students.Find(email);
+                AppUser student = await userManager.FindByEmailAsync(email);
                 cstudent = FormStudent(student);
             }
             catch (Exception ex)
@@ -229,16 +227,38 @@ namespace DAL.Models
             return status;
 
         }
-
-        public async Task<bool> Register(RegisterViewModel registerViewModel)
+        public async Task<bool> Update(UpdateViewModel updateViewModel)
         {
-            bool status=false;
+            bool status = false;
             try
             {
-
-                var user = new IdentityUser { UserName = registerViewModel.Email, Email = registerViewModel.Email};//,Name=registerViewModel.Name,City=registerViewModel.City };
-                var result = await userManager.CreateAsync(user, registerViewModel.Password);
+                AppUser user = await userManager.FindByEmailAsync(updateViewModel.Email);
+                user.Email = updateViewModel.Email;
+                user.Name = updateViewModel.Name;
+                user.City = updateViewModel.City;
+                user.About = updateViewModel.About;
+                user.Skills = updateViewModel.Skills;
+                user.Gender = updateViewModel.Gender;
+                var result = await userManager.UpdateAsync(user);
                 if (result.Succeeded)
+                {
+                    status = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                status = false;
+            }
+            return status;
+        }
+        public async Task<bool> Register(RegisterViewModel registerViewModel)
+        {
+            bool status = false;
+            try
+            {
+                var user = new AppUser { UserName = registerViewModel.Email, Email = registerViewModel.Email, Name = registerViewModel.Name, City = registerViewModel.City };
+                var result = await userManager.CreateAsync(user, registerViewModel.Password);
+                if(result.Succeeded)
                 {
                     await signInManager.SignInAsync(user, isPersistent: false);
                     status = true;
@@ -250,6 +270,6 @@ namespace DAL.Models
             }
             return status;
         }
-        
+
     }
 }

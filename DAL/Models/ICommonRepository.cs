@@ -11,13 +11,14 @@ namespace DAL.Models
     public interface ICommonRepository
     {
         List<CommonTution> GetAllTution();
-        List<CommonStudent> GetAllStudent();
-        List<CommonTeacher> GetAllTeacher();
+        List<CommonUser> GetAllStudent();
+        List<CommonUser> GetAllTeacher();
         List<CommonNotification> GetAllNotification(string email);
-        CommonTeacher GetTeacher(string email);
-        CommonStudent GetStudent(string email);
+        Task<CommonUser> GetTeacher(string email);
+        Task<CommonUser> GetStudent(string email);
         CommonTution GetTution(int id);
         bool AddNotification(CommonNotification notification);
+        Task<bool> Update(UpdateViewModel updateViewModel);
         Task<bool> Register(RegisterViewModel registerViewModel);
 
     }
