@@ -11,6 +11,8 @@ using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace ServiceLayerAPI
 { 
@@ -28,12 +30,18 @@ namespace ServiceLayerAPI
         {
             services.AddDbContextPool<AppDbContext>(
                options => options.UseSqlServer(_config.GetConnectionString("UserDBConnection")));
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>() ;
+            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>() ;
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 5;
             });//same can be done in services.AddIdentity<IdentityUser, IdentityRole>()
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options=>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                .RequireAuthenticatedUser()
+                                .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));//always use allowanonymous at login
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<ITeacherRepository, TeacherRepository>();
             services.AddTransient<ICommonRepository, CommonRepository>();

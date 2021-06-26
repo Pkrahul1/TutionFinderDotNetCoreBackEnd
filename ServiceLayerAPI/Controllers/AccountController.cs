@@ -148,7 +148,8 @@ namespace ServiceLayerAPI.Controllers
             bool status = false;
             try
             {
-                status=signInManager.IsSignedIn(User);
+                if(signInManager.IsSignedIn(User));
+                status = true;
             }
             catch (Exception ex)
             {

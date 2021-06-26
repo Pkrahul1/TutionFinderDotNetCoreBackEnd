@@ -1,6 +1,7 @@
 ﻿using BAL.Models;
 using CALforDataTransfer.Models;
 using DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,17 +17,18 @@ namespace ServiceLayerAPI.Controllers
         public BStudentRepository bsObj { get; }
         public BTeacherRepository btObj { get; }
         public BCommonRepository bcObj { get; }
-        public HomeController(IStudentRepository iUser, ITeacherRepository iTeacher, ICommonRepository iCommon)
+        public HomeController(IStudentRepository iStudent, ITeacherRepository iTeacher, ICommonRepository iCommon)
         {
-            bsObj = new BStudentRepository(iUser);
+            bsObj = new BStudentRepository(iStudent);
             btObj = new BTeacherRepository(iTeacher);
             bcObj = new BCommonRepository(iCommon);
         }
         #region [Get Methods]
         [HttpGet]
+        [AllowAnonymous]
         public JsonResult GetAllTeacher()
         {
-            List<CommonTeacher> lstTeacher = null;
+            List<CommonUser> lstTeacher = null;
             try
             {
                 lstTeacher = bcObj.GetAllTacher();
@@ -40,7 +42,7 @@ namespace ServiceLayerAPI.Controllers
         [HttpGet]
         public JsonResult GetAllStudent()
         {
-            List<CommonStudent> lstStudent = null;
+            List<CommonUser> lstStudent = null;
             try
             {
                 lstStudent = bcObj.GetAllStudent();
@@ -52,6 +54,7 @@ namespace ServiceLayerAPI.Controllers
             return Json(lstStudent);
         }
         [HttpGet]
+        [AllowAnonymous]
         public JsonResult GetAllTution()
         {
             List<CommonTution> lstTution = null;
@@ -81,12 +84,12 @@ namespace ServiceLayerAPI.Controllers
             return Json(lstNotification);
         }
         [HttpGet("{email}")]
-        public JsonResult GetTeacher(string email)
+        public async Task<JsonResult> GetTeacher(string email)
         {
-            CommonTeacher teacher = null;
+            CommonUser teacher = null;
             try
             {
-                teacher = bcObj.GetTeacher(email);
+                teacher = await bcObj.GetTeacher(email);
             }
             catch (Exception ex)
             {
@@ -95,12 +98,12 @@ namespace ServiceLayerAPI.Controllers
             return Json(teacher);
         }
         [HttpGet("{email}")]
-        public JsonResult GetStudent(string email)
+        public async Task<JsonResult> GetStudent(string email)
         {
-            CommonStudent student = null;
+            CommonUser student = null;
             try
             {
-                student = bcObj.GetStudent(email);
+                student = await bcObj.GetStudent(email);
             }
             catch (Exception ex)
             {
@@ -158,40 +161,7 @@ namespace ServiceLayerAPI.Controllers
             }
             return Json(status);
         }
-        [HttpPost]
-        public JsonResult EditStudent(CommonStudent student)
-        {
-            bool status = false;
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    status = bsObj.UpdateStudent(student);
-                }
-            }
-            catch
-            {
-                status = false;
-            }
-            return Json(status);
-        }
-        [HttpPost]
-        public JsonResult EditTeacher(CommonTeacher teacher)
-        {
-            bool status = false;
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    status = btObj.UpdateTeacher(teacher);
-                }
-            }
-            catch
-            {
-                status = false;
-            }
-            return Json(status);
-        }
+
 
         [HttpPost]
         public JsonResult EditTution(CommonTution tution)
@@ -233,8 +203,7 @@ namespace ServiceLayerAPI.Controllers
         [HttpGet]
         public JsonResult Index()
         {
-            return Json("Rahul Kumar");
+            return Json("Rahul Kumar"); 
         }
-
     }
 }
