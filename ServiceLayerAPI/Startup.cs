@@ -45,6 +45,7 @@ namespace ServiceLayerAPI
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<ITeacherRepository, TeacherRepository>();
             services.AddTransient<ICommonRepository, CommonRepository>();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,8 +59,13 @@ namespace ServiceLayerAPI
             {
                 app.UseHsts();
             }
+            app.UseCors(options =>
+            {
+                options.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader();
+            });
             app.UseAuthentication();//adding authentication before mvc middleware.
             app.UseMvcWithDefaultRoute();//will open index in home controller at local url if no attribute at controller and method used
+            
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Hello,no middleware to handle request, this if from default middleware");
