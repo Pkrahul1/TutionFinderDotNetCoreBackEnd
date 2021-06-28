@@ -20,18 +20,19 @@ namespace ServiceLayerAPI.Controllers
     {
         private readonly SignInManager<AppUser> signInManager;
         private readonly UserManager<AppUser> userManager;
-
-        public BStudentRepository bsObj { get; }
-        public BTeacherRepository btObj { get; }
-        public BCommonRepository bcObj { get; }
+        private readonly RoleManager<IdentityRole> roleManager;
+        public BStudentRepository bsObj;
+        public BTeacherRepository btObj;
+        public BCommonRepository bcObj;
         public AccountController(IStudentRepository iStudent, ITeacherRepository iTeacher, ICommonRepository iCommon,SignInManager<AppUser> signInManager,
-                                    UserManager<AppUser> userManager)
+                                    UserManager<AppUser> userManager,RoleManager<IdentityRole> roleManager)
         {
             bsObj = new BStudentRepository(iStudent);
             btObj = new BTeacherRepository(iTeacher);
             bcObj = new BCommonRepository(iCommon);
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.roleManager = roleManager;
         }
 
         #region[HttpPost Methods]
@@ -42,21 +43,47 @@ namespace ServiceLayerAPI.Controllers
             bool status = false;
             try
             {
-                if (ModelState.IsValid)
+                if(ModelState.IsValid)
                 {
-                    status = await bcObj.Register(registerViewModel);
-                    if (status == false)
+                    var user = new AppUser { UserName = registerViewModel.Email, Email = registerViewModel.Email, Name = registerViewModel.Name, City = registerViewModel.City };
+                    var result = await userManager.CreateAsync(user, registerViewModel.Password);
+                    if (result.Succeeded)
                     {
-                        ModelState.AddModelError("Error", "error while Registering and signing");
+                        await signInManager.SignInAsync(user, isPersistent: false);
+                        status = true;
+                        return Json(status);
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("Errors:", error.Description);
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 status = false;
-                ModelState.AddModelError("Exception:",ex.ToString());
             }
             return Json(status);
+        }
+       
+        [HttpGet][HttpPost]
+        //[AcceptVerbs("Get","Post")]
+        [AllowAnonymous]
+        public async Task<JsonResult> IsEmailRegistered(string email)
+        {
+            try
+            {
+                var user = await userManager.FindByEmailAsync(email);
+                if (user == null)
+                {
+                    return Json(true);
+                }
+                return Json(false);
+            }
+            catch(Exception ex)
+            {
+                return Json(false);
+            }
         }
         [HttpPost]
         public async Task<JsonResult> Update(UpdateViewModel updateViewModel)
@@ -66,10 +93,22 @@ namespace ServiceLayerAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    status = await bcObj.Update(updateViewModel);
-                    if (status == false)
+                    AppUser user = await userManager.FindByEmailAsync(updateViewModel.Email);
+                    user.Email = updateViewModel.Email;
+                    user.Name = updateViewModel.Name;
+                    user.City = updateViewModel.City;
+                    user.About = updateViewModel.About;
+                    user.Skills = updateViewModel.Skills;
+                    user.Gender = updateViewModel.Gender;
+                    var result = await userManager.UpdateAsync(user);
+                    if (result.Succeeded)
                     {
-                        ModelState.AddModelError("Error","error while Updating");
+                        status = true;
+                        return Json(status);
+                    }
+                    foreach(var error in result.Errors)
+                    {
+                        ModelState.AddModelError("Errors:", error.Description);
                     }
                 }
             }
@@ -95,7 +134,10 @@ namespace ServiceLayerAPI.Controllers
                         status = true;
                         return Json(status);
                     }
-                    ModelState.AddModelError("SignedIn Error:","SignedIn Failed,check your password");
+                    if(result.IsLockedOut || result.IsNotAllowed) 
+                    { 
+                        ModelState.AddModelError("SignedIn Error:","Account is locked");
+                    }
                 }
             }
             catch (Exception ex)
@@ -143,18 +185,37 @@ namespace ServiceLayerAPI.Controllers
 
         #endregion
         [HttpGet]
-        public  JsonResult IsSignedIn()
+        public JsonResult IsSignedIn()
         {
             bool status = false;
             try
             {
-                status = true;   
+                status = this.signInManager.IsSignedIn(User);     
             }
             catch (Exception ex)
             {
                 status = false;
             }
             return Json(status);
+        }
+        [HttpGet]
+        public async Task<JsonResult> IsInRole()
+        {
+            IList<string> roles = null;
+            try
+            {
+                if(signInManager.IsSignedIn(User))
+                {
+                    var user = await userManager.GetUserAsync(User);
+                    roles = await userManager.GetRolesAsync(user);
+                    return Json(roles);
+                }
+            }
+            catch (Exception ex)
+            {
+                roles = null;
+            }
+            return Json(roles);
         }
     }
 }

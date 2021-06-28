@@ -45,6 +45,7 @@ namespace ServiceLayerAPI
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<ITeacherRepository, TeacherRepository>();
             services.AddTransient<ICommonRepository, CommonRepository>();
+            services.AddTransient<IAdminRepository, AdminRepository>();
             services.AddCors();
         }
 
