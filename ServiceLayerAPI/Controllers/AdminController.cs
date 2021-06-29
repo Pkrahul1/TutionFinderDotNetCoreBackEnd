@@ -1,4 +1,5 @@
 ﻿using BAL.Models;
+using CALforDataTransfer.Claims;
 using CALforDataTransfer.ViewModels;
 using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ServiceLayerAPI.Controllers
@@ -30,8 +32,8 @@ namespace ServiceLayerAPI.Controllers
         //[Authorize(Roles ="Admin")]
         public async Task<JsonResult> GetUser(string email)
         {
-            IList<string> roles;
-            //IList<string> claims = null;
+            List<string> roles = null;
+            List<string> claims = null;
             try
             {
                 if (ModelState.IsValid)
@@ -39,12 +41,21 @@ namespace ServiceLayerAPI.Controllers
                     AppUser user = await this.userManager.FindByEmailAsync(email);
                     if (user != null)
                     {
-                        roles = await userManager.GetRolesAsync(user);
+                        var lstRoles = await userManager.GetRolesAsync(user);
+                        var lstClaims = await userManager.GetClaimsAsync(user);
+                        foreach(var claim in lstClaims)
+                        {
+                            claims.Add(claim.Type.ToString());
+                        }
+                        foreach(var role in lstRoles)
+                        {
+                            roles.Add(role.ToString());
+                        }
                         //claims = await userManager.GetClaimsAsync(user);
                         ManageUserViewModel manageUserViewModel = new ManageUserViewModel()
                         {
-                            Roles=roles
-                            //Claims=
+                            Roles = roles,
+                            Claims = claims
                         };
                         return Json(manageUserViewModel); 
                     }
@@ -110,7 +121,7 @@ namespace ServiceLayerAPI.Controllers
             return Json(status);
         }
         [HttpPost]
-        public async Task<JsonResult> DeleteUserRoles(CreateRoleViewModel[] lstCreateRoleViewModel, string email)
+        public async Task<JsonResult> DeleteUserRoles(List<CreateRoleViewModel> lstCreateRoleViewModel, string email)
         {
             bool status = false;
             IList<string> rolesToDelete = null;
@@ -156,8 +167,52 @@ namespace ServiceLayerAPI.Controllers
             }
             return Json(status);
         }
+        [HttpPost] 
+        public async Task<JsonResult> DeleteUserClaims(Dictionary<string,bool> kvpClm, string email)
+        {
+            bool status = false;
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    AppUser user = await this.userManager.FindByEmailAsync(email);
+                    if (user != null)
+                    {
+                        var claimsOfUser = await userManager.GetClaimsAsync(user);
+                        var claimsToDelete = kvpClm.Where(d => (AllClaims.Claims.Any(c => c.Type.ToString() == d.Key.ToString()) &&
+                                                            !claimsOfUser.Any(c => c.Type.ToString() == d.Key.ToString()) &&
+                                                            d.Value == false)).Select(e => e);
+                        if (claimsToDelete.Any())
+                        {
+                            IEnumerable<Claim> claims = claimsToDelete.Select(e => new Claim(e.Key.ToString(), e.Value.ToString()));
+                            var result = await userManager.RemoveClaimsAsync(user, claims);
+
+                            if (result.Succeeded)
+                            {
+                                status = true;
+                                return Json(status);
+                            }
+                            foreach (IdentityError error in result.Errors)
+                            {
+                                ModelState.AddModelError("ErrorDeletingRoles", error.Description);
+                            }
+                        }
+                        return Json(false);
+                    }
+                    return Json(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                status = false;
+                ModelState.AddModelError("Exception:", ex.ToString());
+            }
+            return Json(status);
+        }
         [HttpPost]
-        public async Task<JsonResult> AddUserRoles(CreateRoleViewModel[] lstCreateRoleViewModel, string email)
+        [Authorize(Policy ="CreateRolePolicy")]
+        public async Task<JsonResult> AddUserRoles(List<CreateRoleViewModel> lstCreateRoleViewModel, string email)
         {
             bool status = false;
             IList<string> rolesToAdd = null;
@@ -180,6 +235,50 @@ namespace ServiceLayerAPI.Controllers
                         if (rolesToAdd.Count > 0)
                         {
                             var result = await userManager.AddToRolesAsync(user, rolesToAdd);
+
+                            if (result.Succeeded)
+                            {
+                                status = true;
+                                return Json(status);
+                            }
+                            foreach (IdentityError error in result.Errors)
+                            {
+                                ModelState.AddModelError("ErrorAddingRoles", error.Description);
+                            }
+                        }
+                        return Json(false);
+                    }
+                    return Json(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                status = false;
+                ModelState.AddModelError("Exception:", ex.ToString());
+            }
+            return Json(status);
+        }
+        [HttpPost]
+        public async Task<JsonResult> AddUserClaims(Dictionary<string,bool> kvpClm, string email)
+        {
+            bool status = false;
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    AppUser user = await this.userManager.FindByEmailAsync(email);
+                    if (user != null)
+                    {
+                        var claimsOfUser = await userManager.GetClaimsAsync(user);
+                        var claimsToAdd = kvpClm.Where(d=> (AllClaims.Claims.Any(c => c.Type.ToString() == d.Key.ToString()) &&
+                                                            !claimsOfUser.Any(c => c.Type.ToString() == d.Key.ToString()) &&
+                                                            d.Value == true)).Select(e=>e);
+                         
+                        if (claimsToAdd.Any())
+                        {
+                            IEnumerable<Claim> claims = claimsToAdd.Select(e => new Claim(e.Key.ToString(), e.Value.ToString()));
+                            var result = await userManager.AddClaimsAsync(user, claims);
 
                             if (result.Succeeded)
                             {
@@ -233,6 +332,7 @@ namespace ServiceLayerAPI.Controllers
             return Json(status);
         }
         [HttpPost]
+        [Authorize(Policy ="OwnerRolePolicy")]
         public async Task<JsonResult> DeleteRole(string role)
         {
             bool status = false;
@@ -264,20 +364,17 @@ namespace ServiceLayerAPI.Controllers
             return Json(status);
         }
         
-        
         [HttpGet]
         public JsonResult GetAllRole()
         {
-            IEnumerable<IdentityRole> roles = null;
-            List<CreateRoleViewModel> lstRoles = new List<CreateRoleViewModel>();
+            IEnumerable<IdentityRole> roles;
+            List<string> lstRoles = new List<string>();
             try
             {
                 roles = roleManager.Roles;
                 foreach (var role in roles)
                 {
-                    CreateRoleViewModel crole = new CreateRoleViewModel();
-                    crole.RoleName = role.Name;
-                    lstRoles.Add(crole);
+                    lstRoles.Add(role.Name.ToString());
                 }
             }
             catch (Exception ex)
@@ -285,6 +382,18 @@ namespace ServiceLayerAPI.Controllers
                 lstRoles = null;
             }
             return Json(lstRoles);
+        }
+
+        [HttpGet]
+        public JsonResult GetAllClaim()
+        {
+            List<string> lstClaims = null;
+            var claims = AllClaims.Claims;
+            foreach(var claim in claims)
+            {
+                lstClaims.Add(claim.Type.ToString());
+            }
+            return Json(lstClaims);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace CALforDataTransfer.ViewModels
 {
     public class ManageUserViewModel
     {
-        public IList<string> Roles { get; set; }
-        public IList<string> Claims { get; set; }
+        public List<string> Roles { get; set; }
+        public List<string> Claims { get; set; }
     }
 }

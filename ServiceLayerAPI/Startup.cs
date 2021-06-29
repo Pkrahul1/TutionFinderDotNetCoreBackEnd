@@ -47,6 +47,18 @@ namespace ServiceLayerAPI
             services.AddTransient<ICommonRepository, CommonRepository>();
             services.AddTransient<IAdminRepository, AdminRepository>();
             services.AddCors();
+            services.AddAuthorization(options=>
+            {
+                options.AddPolicy("CreateDeleteRolePolicy",
+                    policy => policy.RequireClaim("Create Role")//2nd argument will be values in array params[]
+                                    .RequireClaim("Delete Role"));
+
+                options.AddPolicy("CreateRolePolicy",
+                    policy => policy.RequireClaim("Create Role"));
+
+                options.AddPolicy("OwnerRolePolicy",
+                    policy => policy.RequireRole("Owner"));//can give more than one role comma seperated
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
