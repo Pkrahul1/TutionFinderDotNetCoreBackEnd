@@ -29,7 +29,8 @@ namespace ServiceLayerAPI.Controllers
             baObj = new BAdminRepository(iAdmin);
         }
         [HttpGet]
-        //[Authorize(Roles ="Admin")]
+        //[Authorize(Policy ="ABC,CD")]
+        //[Authorize(Roles ="Admin,Owner")]
         public async Task<JsonResult> GetUser(string email)
         {
             List<string> roles = null;
@@ -397,3 +398,4 @@ namespace ServiceLayerAPI.Controllers
         }
     }
 }
+ 

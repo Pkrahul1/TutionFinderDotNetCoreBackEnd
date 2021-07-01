@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using System.Security.Claims;
+using ServiceLayerAPI.CustomeRequirements;
 
 namespace ServiceLayerAPI
 { 
@@ -49,16 +51,51 @@ namespace ServiceLayerAPI
             services.AddCors();
             services.AddAuthorization(options=>
             {
-                options.AddPolicy("CreateDeleteRolePolicy",
-                    policy => policy.RequireClaim("Create Role")//2nd argument will be values in array params[]
-                                    .RequireClaim("Delete Role"));
-
-                options.AddPolicy("CreateRolePolicy",
-                    policy => policy.RequireClaim("Create Role"));
-
+                //owner will have below 2  policies to create roles
+                options.AddPolicy("CreateDeleteAnyRolePolicy",
+                    policy => policy.RequireClaim("Create Role")
+                                    .RequireClaim("Delete Role")
+                                    .RequireRole("Owner"));
                 options.AddPolicy("OwnerRolePolicy",
-                    policy => policy.RequireRole("Owner"));//can give more than one role comma seperated
+                    policy => policy.RequireClaim(ClaimTypes.Role, "Owner"));
+
+                options.AddPolicy("CustomePolicy",
+                    policy => policy.AddRequirements(new OnlyMeRequirement()));
+
+                options.AddPolicy("CreateTutionPolicy",
+                    policy => policy.RequireAssertion(context =>
+                              (context.User.IsInRole("Admin") || context.User.IsInRole("Student"))
+                               && context.User.HasClaim(claim => claim.Type == "Create Tution" && 
+                                                             claim.Value == "true")
+                               || context.User.IsInRole("Owner")));
+
+                options.AddPolicy("DeleteTutionPolicy",
+                    policy => policy.RequireAssertion(context =>
+                              (context.User.IsInRole("Admin") || context.User.IsInRole("Student"))
+                               && context.User.HasClaim(claim => claim.Type == "Delete Tution" &&
+                                                             claim.Value == "true")
+                               || context.User.IsInRole("Owner")));
+
+
+                options.AddPolicy("EditTutionPolicy",
+                    policy => policy.RequireAssertion(context =>
+                              (context.User.IsInRole("Admin") || context.User.IsInRole("Student"))
+                               && context.User.HasClaim(claim => claim.Type == "Edit Tution" &&
+                                                             claim.Value == "true")
+                               || context.User.IsInRole("Owner")));
+
+                options.AddPolicy("ApplyTutionPolicy",
+                    policy => policy.RequireClaim("Apply Tution", "true")
+                                    .RequireRole("Teacher"));
+
+                //below not in use
+                string[] cities = { "Chapra", "Patna" };
+                options.AddPolicy("IsCityCorrectPolicy",
+                    policy => policy.RequireClaim("Available City",cities));
+                                    
             });
+            services.AddSingleton<IAuthorizationHandler, OnlyMeRequirementHandler>();
+            services.AddSingleton<IAuthorizationHandler, IsOwnerOrAdmin>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
