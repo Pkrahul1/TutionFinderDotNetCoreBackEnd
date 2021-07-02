@@ -42,6 +42,9 @@ namespace ServiceLayerAPI
                 options.SignIn.RequireConfirmedEmail = true;
 
                 options.Tokens.EmailConfirmationTokenProvider = "CustomeTokenProviders";
+
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(20);
             });//same can be done in services.AddIdentity<IdentityUser, IdentityRole>()
             services.Configure<DataProtectionTokenProviderOptions>(options =>
             {

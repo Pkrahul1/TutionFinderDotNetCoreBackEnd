@@ -149,7 +149,7 @@ namespace ServiceLayerAPI.Controllers
                         ModelState.AddModelError("", "Email not confirmed");
                         return Json(status);
                     }
-                    var result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, isPersistent: loginViewModel.RememberMe, lockoutOnFailure: false);
+                    var result = await signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, isPersistent: loginViewModel.RememberMe, lockoutOnFailure: true);
                     if(result.Succeeded)
                     {
                         status = true; 
@@ -306,6 +306,10 @@ namespace ServiceLayerAPI.Controllers
                         
                         if (result.Succeeded)
                         {
+                            if( await userManager.IsLockedOutAsync(user))
+                            {
+                                await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+                            }
                             status = true;
                             return Json(status);
                         }
