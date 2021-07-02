@@ -15,7 +15,7 @@ namespace ServiceLayerAPI.Controllers
 {
     [Route("api/[controller]/[Action]")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class AdminController:Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
@@ -212,7 +212,7 @@ namespace ServiceLayerAPI.Controllers
             return Json(status);
         }
         [HttpPost]
-        [Authorize(Policy ="CreateRolePolicy")]
+        //[Authorize(Policy ="CreateRolePolicy")]
         public async Task<JsonResult> AddUserRoles(List<CreateRoleViewModel> lstCreateRoleViewModel, string email)
         {
             bool status = false;
@@ -333,7 +333,7 @@ namespace ServiceLayerAPI.Controllers
             return Json(status);
         }
         [HttpPost]
-        [Authorize(Policy ="OwnerRolePolicy")]
+       // [Authorize(Policy ="OwnerRolePolicy")]
         public async Task<JsonResult> DeleteRole(string role)
         {
             bool status = false;

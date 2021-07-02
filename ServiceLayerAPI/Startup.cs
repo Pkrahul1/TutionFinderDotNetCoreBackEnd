@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using System.Security.Claims;
 using ServiceLayerAPI.CustomeRequirements;
+using ServiceLayerAPI.Customize;
 
 namespace ServiceLayerAPI
 { 
@@ -32,11 +33,24 @@ namespace ServiceLayerAPI
         {
             services.AddDbContextPool<AppDbContext>(
                options => options.UseSqlServer(_config.GetConnectionString("UserDBConnection")));
-            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>() ;
+            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>()
+                                                         .AddDefaultTokenProviders()
+                                                         .AddTokenProvider<CustomeTokenProvider<AppUser>>("CustomeTokenProviders");
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 5;
+                options.SignIn.RequireConfirmedEmail = true;
+
+                options.Tokens.EmailConfirmationTokenProvider = "CustomeTokenProviders";
             });//same can be done in services.AddIdentity<IdentityUser, IdentityRole>()
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+            {
+                options.TokenLifespan = TimeSpan.FromHours(1);//set lifespan of all token to 1 hour.
+            });
+            services.Configure<CustomeTokenProviderOtions>(options=>
+            {
+                options.TokenLifespan = TimeSpan.FromDays(2);
+            });
             services.AddMvc(options=>
             {
                 var policy = new AuthorizationPolicyBuilder()
@@ -44,6 +58,8 @@ namespace ServiceLayerAPI
                                 .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));//always use allowanonymous at login
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddAuthentication();
+                    
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<ITeacherRepository, TeacherRepository>();
             services.AddTransient<ICommonRepository, CommonRepository>();
@@ -54,7 +70,7 @@ namespace ServiceLayerAPI
                 //owner will have below 2  policies to create roles
                 options.AddPolicy("CreateDeleteAnyRolePolicy",
                     policy => policy.RequireClaim("Create Role")
-                                    .RequireClaim("Delete Role")
+                                    .RequireClaim("Delete Role") 
                                     .RequireRole("Owner"));
                 options.AddPolicy("OwnerRolePolicy",
                     policy => policy.RequireClaim(ClaimTypes.Role, "Owner"));
@@ -96,6 +112,7 @@ namespace ServiceLayerAPI
             });
             services.AddSingleton<IAuthorizationHandler, OnlyMeRequirementHandler>();
             services.AddSingleton<IAuthorizationHandler, IsOwnerOrAdmin>();
+            services.AddSingleton<DataProtectionPurposeStrings>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
