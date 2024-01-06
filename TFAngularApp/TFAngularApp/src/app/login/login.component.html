@@ -1,0 +1,55 @@
+<app-common-layout></app-common-layout>
+<br />
+<div class="container">
+  <!--ngNativeValidate is used to disable form in case of error in DOM-->
+  <form ngNativeValidate  #loginForm="ngForm" (ngSubmit)="submitForm(loginForm)" style="background-color:slategrey">
+    <div class="row" style="height:fit-content">
+      <div class="col-md-6">
+        <h2>Loginn</h2>
+        <h5>All fields are mandatory</h5>
+        <div class="form-group" style="align-content:center">
+          <div class="form-group" style="text-align:left;margin:0px 10px 0px">
+            <div style="text-align:left">
+              <label>Email:</label>
+            </div>
+            <div class="col; input-group">
+              <input class="form-control" type="email" #emailRef="ngModel" placeholder="Enter email Id" name="email" ngModel required />
+            </div>
+            <div *ngIf="emailRef.errors && (emailRef.touched || emailRef.dirty)" style="text-align:left;padding-top:5px;color:red">
+              <div *ngif="isEmailExisting">
+                Email Already Exists!
+              </div>
+              <div [hidden]="!emailRef.errors.required">
+                Emial is mandatory
+              </div>
+              <div [hidden]="!emailRef.errors.pattern">
+                Emial format is not correct
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="text-align:left;margin:0px 10px 0px">
+            <div style="text-align:left">
+              <label>Password:</label>
+            </div>
+            <div class="col; input-group">
+              <input type="password" name="password" #passRef="ngModel" placeholder="Enter Password" class="form-control" ngModel required />
+            </div>
+            <div *ngIf="passRef.errors && (passRef.touched || passRef.dirty)" style="text-align:left;padding-top:5px;color:red">
+              <div [hidden]="passRef.errors.required">
+                Password is mandatory
+              </div>
+              <!--when nothing is typed in control it remains pristine as soon as
+    something entered it becomes entered for ever(until the the page
+    is refreshed again)-->
+            </div>
+          </div>
+          <div class="form-group" style="text-align:left;margin:0px 10px 0px">
+            <button type="submit" class="btn">Submit</button>
+          </div>
+        </div>
+        </div>
+      <div class="col-md-6">
+      </div>
+    </div>
+  </form>
+</div>

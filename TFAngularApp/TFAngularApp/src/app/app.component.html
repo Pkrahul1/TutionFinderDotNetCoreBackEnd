@@ -1,0 +1,18 @@
+<div style="text-align:center">
+  <h1>
+    rahul singh
+  </h1>
+  <h2>for checking passing data from parent to child select below</h2>
+  select a course:<select #crse (change)="name=crse.value">
+    <option value="Angular">Angular</option>
+    <option value="React">React</option>
+  </select>
+  <br />
+  <br />
+  <app-nested-check [cName]="name" (onRegister)="coursereg($event)"></app-nested-check>
+
+  <!--[cName]="name"-cName is passing name value to chlid class. (onRegister)="coursereg($event)"-when event is emited from child it
+      triggers OnRegister which in turn invoke coursereg .event contains the value emited from child-->
+  <div *ngIf="msg">{{msg}}</div>
+  <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,18 @@
+ 
+<div class="table-responsive">
+  <table class="table" style="text-align:center">
+    <tr>
+
+      <th>Course Id</th>
+      <th>Course Name</th>
+
+    </tr>
+    <tr *ngFor="let c of course">
+      <td>{{c.courseId}}</td>
+      <td>{{c.courseName}}</td>
+      <td><button [style.color]="color"  type="submit" (click)="register(c.courseName)">register</button></td>
+    </tr>
+  </table>
+  <p *ngIf="check">for passing data from child to parent click register</p>
+</div>
+

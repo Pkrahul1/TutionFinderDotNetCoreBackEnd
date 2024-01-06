@@ -1,0 +1,17 @@
+<div>
+  <h1>
+    All Registed Users
+  </h1>
+  <div class="table-responsive">
+    <table class="table">
+      <tr>
+        <th>Name</th>       
+        <th>Email</th>        
+      </tr>
+      <tr *ngFor="let user of testusers">
+        <td>{{user.name}}</td>
+        <td>{{user.email}}</td>        
+      </tr>
+    </table>
+  </div>
+</div>

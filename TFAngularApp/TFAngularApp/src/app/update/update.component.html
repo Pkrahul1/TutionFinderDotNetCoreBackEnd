@@ -1,0 +1,48 @@
+<app-common-layout></app-common-layout>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6"></div>
+    <div>Search:</div>
+    <div class="col-md-4">
+      <input type="text" placeholder="search product" (input)="searchProduct(productName.value)" class="form-control" #productName/>
+    </div>
+  </div>
+  <form ngNativeValidate #updateProd="ngForm" (ngSubmit)="updateProduct(updateProd)">
+    <div class="row">
+      <div class="col-md-3">
+      </div>
+      <div class="col-md-4">
+        <h1 style="text-align:center;color:rebeccapurple">Change Age to Update</h1>
+        <div class="form-group">
+          <div>
+            <label>Name:</label>
+          </div>
+          <div>
+            <input type="text" name="name" [ngModel]="name" class="form-control" readonly required />
+          </div>
+        </div>
+        <div class="form-group">
+          <div>
+            <label>Age:</label>
+          </div>
+          <div>
+            <input type="text" name="age" [(ngModel)]="age" class="form-control" required />
+            <!--<input type="text" name="age" [ngModelOptions]="{updateOn:'submit'}" [(ngModel)]="age" class="form-control" required />-->
+            <!--<input type="text" name="age" [ngModelOptions]="{updateOn:'blur'}" [(ngModel)]="age" class="form-control" required />-->
+          </div>
+          <!--blur will update once control lost focus(coming out of that control),submit update after clicking submit,by default it
+          changes as soon value is changed-->
+        </div>
+        <div class="form-group">
+          <div>
+            <button type="submit" class="btn">Update</button>
+            <button type="button" class="btn" (click)="updateProd.reset()">Reset</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+      </div>
+    </div>
+    <div style="text-align:center">age entered:{{age}}</div>
+  </form>
+</div>

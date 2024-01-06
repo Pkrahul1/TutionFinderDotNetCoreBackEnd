@@ -1,0 +1,24 @@
+<app-common-layout></app-common-layout>
+<div class="row" style="text-align:center">
+  <br />
+  <div class="col-md-12" style="text-align:center; background-color:beige">
+    <br />
+    <label>First Name</label>&nbsp;
+    <input   type="text" [(ngModel)]="firstName" />
+    <br />
+    <br />
+    <label>Last Name</label>&nbsp;
+    <input    type="text" [(ngModel)]="lastName" />
+    <br />
+    <br />
+    <label>Full Name:</label> {{firstName}} {{lastName}}
+    <br />
+    <br />
+    <label>Email from Session:</label>
+    <div style="text-align:center">
+    <input type="text"  name="email" [ngModel]="emailId"  readonly/>
+    </div>
+    <div>{{emailId}}</div>
+  </div>
+</div>
+

@@ -1,0 +1,56 @@
+<app-common-layout></app-common-layout>
+<div>
+  <h1>view products</h1>
+  <div class="row">
+    <div class="col-md-4" style="text-align:right">
+      <label>Find Your Tution:</label>
+    </div>
+    <div class="col-md-8">
+      <form ngNativeValidate #filterTution ="ngForm" (ngSubmit)="submitForm(filterTution)"> <!--style="background-color:slategrey">-->
+        <div class="row" style="height:fit-content">
+          <div class="col-md-3">
+            <select class="form-control" #filterid="ngModel" (change)="changePlaceholder(filterid.value)" name="filterId" ngModel required autocomplete="off">
+              <option value="" hidden>Choose Option</option>
+              <option value="All" >All Available</option>
+              <option value="City">City</option>
+              <option value="CreatedBy">CreatedBy</option>
+              <!--<option *ngFor="let tution of tutions" value={{tution.id}}>
+  {{tution.id}}-->
+              <!--</option>-->
+            </select>
+          </div>
+          <div class="col-md-3">
+            <input class="form-control" type="text" #filterValue="ngModel" placeholder="{{shwPlaceholder}}" name="filterValue" ngModel required />
+          </div>
+          <div class="col-md-2">
+              <button type="submit" class="btn btn-primary form-control" style="text-align:center">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <br /><br />
+  <div *ngIf="!noTution">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <tr class="table-dark">
+          <th>Created By</th>
+          <th>Description</th>
+          <th>City</th>
+          <th>Status</th>
+          <th>Click to Apply</th>
+        </tr>
+        <tr *ngFor="let tution of tutions;let i=index">
+          <td>{{tution.CreaterId}}</td>
+          <td>{{tution.Description}}</td>
+          <td>{{tution.City}}</td>
+          <td>{{tution.Status}}</td>
+          <td><button type="submit" title="Click to Apply" class="btn" (click)="applyTution()">Apply</button></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="noTution">
+    <h4 style="color:red">No Tution Available at the moment</h4>
+  </div>
+    </div>

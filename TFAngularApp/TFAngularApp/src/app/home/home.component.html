@@ -1,0 +1,41 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">QuickKartApp</a>
+  <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a routerLink="/view" class="nav-link" href="#">View Products</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/serviceTesting" class="nav-link" href="#">Test You Service</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/twoWay" class="nav-link" href="#">Validate Two Way Binding </a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/html" class="nav-link" href="#">Get Student or Tution </a>
+      </li>
+    </ul>
+  </div>
+  <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a routerLink="/login" class="nav-link" href="#">Login</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/register" class="nav-link" href="#">Sign Up</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div style="margin-top:100px">
+  <div class="btn-toolbar" style="place-content:center">
+    <button routerLink="/register" class="btn btn-primary" style="margin-right:50px">See All Tution</button>
+    <button routerLink="/register" class="btn btn-primary" style="margin-left:50px">See All Teacher</button>
+  </div>
+  <!--<h1>Click on above option. You are on Home Page </h1>
+  enter value:
+  <input #val type="text" name="val" (change)="changingValue(val.value)" [(ngModel)]="value"/>
+  :{{value}}-->
+</div>
+
+

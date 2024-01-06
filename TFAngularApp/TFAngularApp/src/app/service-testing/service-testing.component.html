@@ -1,0 +1,17 @@
+<app-common-layout></app-common-layout>
+<div>
+  <div class="table-responsive">
+    <table class="table">
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>FilterId</th>
+      </tr>
+      <tr *ngFor="let product of products">
+        <td>{{product.name}}</td>
+        <td>{{product.age}}</td>
+        <td>{{product.filterId}}</td>
+      </tr>
+    </table>
+  </div>
+</div>
